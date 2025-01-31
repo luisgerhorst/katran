@@ -258,7 +258,10 @@ get_folly() {
 
     pushd .
     echo -e "${COLOR_GREEN}[ INFO ] Cloning folly repo ${COLOR_OFF}"
-    git clone https://github.com/facebook/folly --depth 1 "$FOLLY_DIR"
+    git clone https://github.com/facebook/folly "$FOLLY_DIR"
+    pushd "$FOLLY_DIR"
+    git checkout 3886be4
+    popd
     echo -e "${COLOR_GREEN}[ INFO ] Building Folly ${COLOR_OFF}"
     mkdir -p "$FOLLY_BUILD_DIR"
     cd "$FOLLY_BUILD_DIR" || exit
@@ -429,6 +432,9 @@ get_fmt() {
     cd "$DEPS_DIR"
     echo -e "${COLOR_GREEN}[ INFO ] Cloning fmt repo ${COLOR_OFF}"
     git clone https://github.com/fmtlib/fmt
+    cd fmt
+    git checkout 10.2.1
+    cd ..
     mkdir -p "$FMT_BUILD_DIR"
     cd "$FMT_BUILD_DIR"
     cmake -DCXX_STD=gnu++17                         \
