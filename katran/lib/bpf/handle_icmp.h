@@ -22,12 +22,12 @@
  * and handling ICMP packets
  */
 
-#include <linux/icmp.h>
-#include <linux/icmpv6.h>
-#include <linux/if_ether.h>
-#include <linux/ip.h>
-#include <linux/ipv6.h>
-#include <stddef.h>
+/* #include <linux/icmp.h> */
+/* #include <linux/icmpv6.h> */
+/* #include <linux/if_ether.h> */
+/* #include <linux/ip.h> */
+/* #include <linux/ipv6.h> */
+/* #include <stddef.h> */
 
 #include "katran/lib/linux_includes/bpf.h"
 #include "katran/lib/linux_includes/bpf_endian.h"

@@ -23,9 +23,9 @@
  * using IPIP as our encap of choice
  */
 
-#include <linux/ip.h>
-#include <linux/ipv6.h>
-#include <string.h>
+/* #include <linux/ip.h> */
+/* #include <linux/ipv6.h> */
+/* #include <string.h> */
 
 #include "katran/lib/linux_includes/bpf.h"
 #include "katran/lib/linux_includes/bpf_endian.h"

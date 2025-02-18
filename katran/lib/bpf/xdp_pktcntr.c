@@ -14,13 +14,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <linux/if.h>
-#include <linux/if_ether.h>
-#include <linux/if_tunnel.h>
-#include <linux/in.h>
-#include <linux/ip.h>
-#include <linux/ipv6.h>
-#include <linux/pkt_cls.h>
+/* #include <linux/if.h> */
+/* #include <linux/if_ether.h> */
+/* #include <linux/if_tunnel.h> */
+/* #include <linux/in.h> */
+/* #include <linux/ip.h> */
+/* #include <linux/ipv6.h> */
+/* #include <linux/pkt_cls.h> */
 
 #include "bpf.h"
 #include "bpf_helpers.h"

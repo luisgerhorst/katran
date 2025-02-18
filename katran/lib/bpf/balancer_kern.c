@@ -3,12 +3,12 @@
  * This is main balancer's application code
  */
 
-#include <linux/in.h>
-#include <linux/ip.h>
-#include <linux/ipv6.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <string.h>
+/* #include <linux/in.h> */
+/* #include <linux/ip.h> */
+/* #include <linux/ipv6.h> */
+/* #include <stdbool.h> */
+/* #include <stddef.h> */
+/* #include <string.h> */
 
 #include "katran/lib/linux_includes/bpf.h"
 #include "katran/lib/linux_includes/bpf_helpers.h"

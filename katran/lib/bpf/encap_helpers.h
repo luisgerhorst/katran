@@ -17,10 +17,10 @@
 #ifndef __ENCAP_HELPERS_H
 #define __ENCAP_HELPERS_H
 
-#include <linux/ip.h>
-#include <linux/ipv6.h>
-#include <linux/udp.h>
-#include <string.h>
+/* #include <linux/ip.h> */
+/* #include <linux/ipv6.h> */
+/* #include <linux/udp.h> */
+/* #include <string.h> */
 
 #include "katran/lib/linux_includes/bpf.h"
 #include "katran/lib/linux_includes/bpf_endian.h"

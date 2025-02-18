@@ -17,12 +17,13 @@
 #ifndef __FLOW_DEBUG_HELPERS_H
 #define __FLOW_DEBUG_HELPERS_H
 
-#include <linux/if_ether.h>
-#include <linux/in.h>
-#include <linux/ip.h>
-#include <linux/ipv6.h>
-#include <linux/tcp.h>
-#include <linux/udp.h>
+/* #include <linux/if_ether.h> */
+/* #include <linux/in.h> */
+/* #include <linux/ip.h> */
+/* #include <linux/ipv6.h> */
+/* #include <linux/tcp.h> */
+/* #include <linux/udp.h> */
+#include "bpf.h"
 
 #include "flow_debug_maps.h"
 

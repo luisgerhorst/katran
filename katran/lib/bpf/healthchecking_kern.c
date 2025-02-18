@@ -14,12 +14,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <linux/if_ether.h>
-#include <linux/ip.h>
-#include <linux/ipv6.h>
-#include <linux/pkt_cls.h>
-#include <linux/string.h>
-#include <linux/udp.h>
+/* #include <linux/if_ether.h> */
+/* #include <linux/ip.h> */
+/* #include <linux/ipv6.h> */
+/* #include <linux/pkt_cls.h> */
+/* #include <linux/string.h> */
+/* #include <linux/udp.h> */
 
 #include "katran/lib/linux_includes/bpf.h"
 #include "katran/lib/linux_includes/bpf_helpers.h"

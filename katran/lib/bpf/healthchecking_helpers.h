@@ -17,14 +17,14 @@
 #ifndef __HEALTHCHECKING_HELPERS_H
 #define __HEALTHCHECKING_HELPERS_H
 
-#include <linux/if_ether.h>
-#include <linux/ip.h>
-#include <linux/ipv6.h>
-#include <linux/pkt_cls.h>
-#include <linux/string.h>
-#include <linux/tcp.h>
-#include <linux/udp.h>
-#include <stdbool.h>
+/* #include <linux/if_ether.h> */
+/* #include <linux/ip.h> */
+/* #include <linux/ipv6.h> */
+/* #include <linux/pkt_cls.h> */
+/* #include <linux/string.h> */
+/* #include <linux/tcp.h> */
+/* #include <linux/udp.h> */
+/* #include <stdbool.h> */
 
 #include "katran/lib/linux_includes/bpf.h"
 #include "katran/lib/linux_includes/bpf_helpers.h"

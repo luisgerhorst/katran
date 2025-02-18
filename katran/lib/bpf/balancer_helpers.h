@@ -20,10 +20,10 @@
  * This file contains common used routines. such as csum helpers etc
  */
 
-#include <linux/in.h>
-#include <linux/ip.h>
-#include <linux/ipv6.h>
-#include <stdbool.h>
+/* #include <linux/in.h> */
+/* #include <linux/ip.h> */
+/* #include <linux/ipv6.h> */
+/* #include <stdbool.h> */
 
 #include "katran/lib/linux_includes/bpf.h"
 #include "katran/lib/linux_includes/bpf_helpers.h"

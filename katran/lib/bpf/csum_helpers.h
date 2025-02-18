@@ -17,11 +17,11 @@
 #ifndef __CSUM_HELPERS_H
 #define __CSUM_HELPERS_H
 
-#include <linux/in.h>
-#include <linux/ip.h>
-#include <linux/ipv6.h>
-#include <linux/udp.h>
-#include <stdbool.h>
+/* #include <linux/in.h> */
+/* #include <linux/ip.h> */
+/* #include <linux/ipv6.h> */
+/* #include <linux/udp.h> */
+/* #include <stdbool.h> */
 
 #include "katran/lib/linux_includes/bpf.h"
 #include "katran/lib/linux_includes/bpf_endian.h"

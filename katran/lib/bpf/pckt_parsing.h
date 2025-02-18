@@ -22,17 +22,17 @@
  * parsing etc)
  */
 
-#include <linux/icmp.h>
-#include <linux/icmpv6.h>
-#include <linux/if_ether.h>
-#include <linux/ip.h>
-#include <linux/ipv6.h>
-#include <linux/ptrace.h>
-#include <linux/tcp.h>
-#include <linux/udp.h>
-#include <linux/version.h>
-#include <stdbool.h>
-#include <stddef.h>
+/* #include <linux/icmp.h> */
+/* #include <linux/icmpv6.h> */
+/* #include <linux/if_ether.h> */
+/* #include <linux/ip.h> */
+/* #include <linux/ipv6.h> */
+/* #include <linux/ptrace.h> */
+/* #include <linux/tcp.h> */
+/* #include <linux/udp.h> */
+/* #include <linux/version.h> */
+/* #include <stdbool.h> */
+/* #include <stddef.h> */
 
 #include "katran/lib/linux_includes/bpf.h"
 

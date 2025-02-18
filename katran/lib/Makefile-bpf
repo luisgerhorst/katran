@@ -6,11 +6,21 @@ DEBUGBPF = -DDEBUG
 DEBUGFLAGS = -O0 -g -Wall
 PFLAGS = $(DEBUGFLAGS)
 
-INCLUDEFLAGS = -I$(obj)/usr/include \
-	       -I$(obj)/include \
-	       -I$(obj)
+# Get Clang's default includes on this system, as opposed to those seen by
+# '-target bpf'. This fixes "missing" files on some architectures/distros,
+# such as asm/byteorder.h, asm/socket.h, asm/sockios.h, sys/cdefs.h etc.
+#
+# Use '-idirafter': Don't interfere with include mechanics except where the
+# build would have failed anyways.
+define get_sys_includes
+$(shell $(1) -v -E - </dev/null 2>&1 \
+        | sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }') \
+$(shell $(1) -dM -E - </dev/null | grep '#define __riscv_xlen ' | sed 's/#define /-D/' | sed 's/ /=/')
+endef
 
+CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
 
+INCLUDEFLAGS = -I$(obj)/usr/include -I$(obj)/include -I$(obj)
 
 always = bpf/balancer_kern.o
 always += bpf/healthchecking_ipip.o
@@ -36,7 +46,7 @@ clean:
 	@rm -f *~
 
 $(obj)/bpf/%.o: $(src)/katran/lib/bpf/%.c
-	$(CLANG) $(INCLUDEFLAGS) $(EXTRA_CFLAGS) \
+	$(CLANG) -target bpf -D__TARGET_ARCH_BPF $(INCLUDEFLAGS) $(EXTRA_CFLAGS) \
 	$(DEBUGBPF) -D__KERNEL__ -Wno-unused-value -Wno-pointer-sign \
-		-Wno-compare-distinct-pointer-types \
-		-emit-llvm -c -g $< -o -| $(LLC) -march=bpf -filetype=obj -o $@
+		-Wno-compare-distinct-pointer-types $(CLANG_SYS_INCLUDES) \
+		-g -c $< -o $@

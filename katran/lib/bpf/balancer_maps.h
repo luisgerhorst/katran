@@ -90,6 +90,17 @@ struct {
   __uint(map_flags, NO_FLAGS);
 } reals_stats SEC(".maps");
 
+/* struct bpf_map { */
+/* 	enum bpf_map_type map_type; */
+/* 	__u32 key_size; */
+/* 	__u32 value_size; */
+/* 	__u32 max_entries; */
+/* 	__u32 id; */
+/* } __attribute__((preserve_access_index)); */
+
+extern __u64 bpf_map_lookup_u32_by_value(struct bpf_map *map, __u64 key) __ksym;
+extern void *bpf_map_lookup_elem_by_value(struct bpf_map *map, __u64 key) __ksym;
+
 // map with per real lru miss statistic
 struct {
   __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
@@ -98,6 +109,7 @@ struct {
   __uint(max_entries, MAX_REALS);
   __uint(map_flags, NO_FLAGS);
 } lru_miss_stats SEC(".maps");
+
 
 struct {
   __uint(type, BPF_MAP_TYPE_ARRAY);
@@ -115,6 +127,8 @@ struct {
   __uint(max_entries, STATS_MAP_SIZE);
   __uint(map_flags, NO_FLAGS);
 } stats SEC(".maps");
+
+
 
 // map for quic stats
 struct {
