@@ -28,6 +28,11 @@
 #include "katran/lib/bpf/balancer_consts.h"
 #include "katran/lib/bpf/balancer_structs.h"
 
+#define __ksym __attribute__((section(".ksyms")))
+extern __u64 bpf_map_lookup_u32_by_value(void *p__map, __u64 key) __ksym;
+extern void *bpf_map_lookup_elem_by_value(void *p__map, __u64 key) __ksym;
+extern void bpf_throw(__u64 cookie) __ksym; // for testing kfuncs
+
 // map, which contains all the vips for which we are doing load balancing
 struct {
   __uint(type, BPF_MAP_TYPE_HASH);

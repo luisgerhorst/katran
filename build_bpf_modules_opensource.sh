@@ -65,11 +65,21 @@ if [ -z "${SRC_DIR-}" ] ; then
   SRC_DIR="$(pwd)"
 fi
 
-# Use the clang version based on the one fetched in 'build_katran.sh'
-CLANG_PATH="${BUILD_DIR}/deps/clang/clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04"
-if [ -f /etc/redhat-release ]; then
-  CLANG_PATH=/usr
+# Required for BTF kfuncs
+llvm_version=19
+CLANG_PATH="/usr/lib/llvm-$llvm_version"
+sudo apt-get install --yes lsb-release wget software-properties-common gnupg || true
+if [[ ! -d $CLANG_PATH ]] && [[ $(lsb_release --codename | cut -f2) == bookworm ]]
+then
+    wget https://apt.llvm.org/llvm.sh
+    chmod +x llvm.sh
+    sudo ./llvm.sh $llvm_version all
+elif [ -f /etc/redhat-release ]
+then
+    CLANG_PATH=/usr
 fi
+test -d $CLANG_PATH
+export LD_LIBRARY_PATH=$CLANG_PATH/lib:$LD_LIBRARY_PATH
 
 rm -rf "${BUILD_DIR}/deps/bpfprog"
 mkdir -p "${BUILD_DIR}/deps/bpfprog/include"
