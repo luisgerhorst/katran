@@ -65,7 +65,7 @@ __attribute__((__always_inline__)) static inline void
 increment_ch_drop_no_real() {
   __u32 ch_drop_stats_key = MAX_VIPS + CH_DROP_STATS;
   struct lb_stats* ch_drop_stats =
-      bpf_map_lookup_elem(&stats, &ch_drop_stats_key);
+      bpf_map_lookup_elem_by_value(&stats, ch_drop_stats_key);
   if (!ch_drop_stats) {
     return;
   }
@@ -76,7 +76,7 @@ __attribute__((__always_inline__)) static inline void
 increment_ch_drop_real_0() {
   __u32 ch_drop_stats_key = MAX_VIPS + CH_DROP_STATS;
   struct lb_stats* ch_drop_stats =
-      bpf_map_lookup_elem(&stats, &ch_drop_stats_key);
+      bpf_map_lookup_elem_by_value(&stats, ch_drop_stats_key);
   if (!ch_drop_stats) {
     return;
   }
@@ -119,7 +119,7 @@ __attribute__((__always_inline__)) static inline bool get_packet_dst(
       key = *lpm_val;
     }
     __u32 stats_key = MAX_VIPS + LPM_SRC_CNTRS;
-    struct lb_stats* data_stats = bpf_map_lookup_elem(&stats, &stats_key);
+    struct lb_stats* data_stats = bpf_map_lookup_elem_by_value(&stats, stats_key);
     if (data_stats) {
       if (src_found) {
         data_stats->v2 += 1;
@@ -142,7 +142,7 @@ __attribute__((__always_inline__)) static inline bool get_packet_dst(
     hash = get_packet_hash(pckt, hash_16bytes) % RING_SIZE;
     key = RING_SIZE * (vip_info->vip_num) + hash;
 
-    real_pos = bpf_map_lookup_elem(&ch_rings, &key);
+    real_pos = bpf_map_lookup_elem_by_value(&ch_rings, key);
     if (!real_pos) {
       return false;
     }
@@ -154,7 +154,7 @@ __attribute__((__always_inline__)) static inline bool get_packet_dst(
     }
   }
   pckt->real_index = key;
-  *real = bpf_map_lookup_elem(&reals, &key);
+  *real = bpf_map_lookup_elem_by_value(&reals, key);
   if (!(*real)) {
     // The id we retrieved from the hash ring is out of bounds in the reals
     // array.
@@ -192,7 +192,7 @@ __attribute__((__always_inline__)) static inline void connection_table_lookup(
   }
   key = dst_lru->pos;
   pckt->real_index = key;
-  *real = bpf_map_lookup_elem(&reals, &key);
+  *real = bpf_map_lookup_elem_by_value(&reals, key);
   return;
 }
 
@@ -282,7 +282,7 @@ check_decap_dst(struct packet_description* pckt, bool is_ipv6, bool* pass) {
 
   if (is_ipv6) {
     addr_index = V6_SRC_INDEX;
-    host_primary_addrs = bpf_map_lookup_elem(&pckt_srcs, &addr_index);
+    host_primary_addrs = bpf_map_lookup_elem_by_value(&pckt_srcs, addr_index);
     if (host_primary_addrs) {
       // a workaround for eBPF's `__builtin_memcmp` bug
       if (host_primary_addrs->dstv6[0] != pckt->flow.dstv6[0] ||
@@ -297,7 +297,7 @@ check_decap_dst(struct packet_description* pckt, bool is_ipv6, bool* pass) {
     }
   } else {
     addr_index = V4_SRC_INDEX;
-    host_primary_addrs = bpf_map_lookup_elem(&pckt_srcs, &addr_index);
+    host_primary_addrs = bpf_map_lookup_elem_by_value(&pckt_srcs, addr_index);
     if (host_primary_addrs) {
       if (host_primary_addrs->dst != pckt->flow.dst) {
         // Since the outer packet destination does not match host IPv4,
@@ -319,7 +319,7 @@ check_decap_dst(struct packet_description* pckt, bool is_ipv6, bool* pass) {
   if (decap_dst_flags) {
     *pass = false;
     __u32 stats_key = MAX_VIPS + REMOTE_ENCAP_CNTRS;
-    data_stats = bpf_map_lookup_elem(&stats, &stats_key);
+    data_stats = bpf_map_lookup_elem_by_value(&stats, stats_key);
     if (!data_stats) {
       return XDP_DROP;
     }
@@ -339,11 +339,11 @@ __attribute__((__always_inline__)) static inline int perform_global_lru_lookup(
     struct vip_meta* vip_info,
     bool is_ipv6) {
   // lookup in the global cache
-  void* g_lru_map = bpf_map_lookup_elem(&global_lru_maps, &cpu_num);
+  void* g_lru_map = bpf_map_lookup_elem_by_value(&global_lru_maps, cpu_num);
   __u32 global_lru_stats_key = MAX_VIPS + GLOBAL_LRU_CNTR;
 
   struct lb_stats* global_lru_stats =
-      bpf_map_lookup_elem(&stats, &global_lru_stats_key);
+      bpf_map_lookup_elem_by_value(&stats, global_lru_stats_key);
   if (!global_lru_stats) {
     return XDP_DROP;
   }
@@ -408,7 +408,7 @@ __attribute__((__always_inline__)) static inline int process_encaped_ipip_pckt(
   }
 
   __u32 stats_key = MAX_VIPS + DECAP_CNTR;
-  struct lb_stats* data_stats = bpf_map_lookup_elem(&stats, &stats_key);
+  struct lb_stats* data_stats = bpf_map_lookup_elem_by_value(&stats, stats_key);
   if (!data_stats) {
     return XDP_DROP;
   }
@@ -475,7 +475,7 @@ __attribute__((__always_inline__)) static inline int process_encaped_gue_pckt(
   }
 
   __u32 stats_key = MAX_VIPS + DECAP_CNTR;
-  struct lb_stats* data_stats = bpf_map_lookup_elem(&stats, &stats_key);
+  struct lb_stats* data_stats = bpf_map_lookup_elem_by_value(&stats, stats_key);
   if (!data_stats) {
     return XDP_DROP;
   }
@@ -518,7 +518,7 @@ __attribute__((__always_inline__)) static inline int update_vip_lru_miss_stats(
   // track the lru miss counter of vip in lru_miss_stats_vip
   __u32 lru_miss_stats_vip_key = 0;
   struct vip_definition* lru_miss_stat_vip =
-      bpf_map_lookup_elem(&lru_miss_stats_vip, &lru_miss_stats_vip_key);
+      bpf_map_lookup_elem_by_value(&lru_miss_stats_vip, lru_miss_stats_vip_key);
   if (!lru_miss_stat_vip) {
     return XDP_DROP;
   }
@@ -533,7 +533,7 @@ __attribute__((__always_inline__)) static inline int update_vip_lru_miss_stats(
   bool vip_match = address_match && port_match && proto_match;
   if (vip_match) {
     __u32 lru_stats_key = pckt->real_index;
-    __u32* lru_miss_stat = bpf_map_lookup_elem(&lru_miss_stats, &lru_stats_key);
+    __u32* lru_miss_stat = bpf_map_lookup_elem_by_value(&lru_miss_stats, lru_stats_key);
     if (!lru_miss_stat) {
       return XDP_DROP;
     }
@@ -689,7 +689,7 @@ process_packet(struct xdp_md* xdp, __u64 off, bool is_ipv6) {
     REPORT_PACKET_TOOBIG(xdp, data, data_end - data, false);
 #ifdef ICMP_TOOBIG_GENERATION
     __u32 stats_key = MAX_VIPS + ICMP_TOOBIG_CNTRS;
-    data_stats = bpf_map_lookup_elem(&stats, &stats_key);
+    data_stats = bpf_map_lookup_elem_by_value(&stats, stats_key);
     if (!data_stats) {
       return XDP_DROP;
     }
@@ -705,7 +705,7 @@ process_packet(struct xdp_md* xdp, __u64 off, bool is_ipv6) {
   }
 
   __u32 stats_key = MAX_VIPS + LRU_CNTRS;
-  data_stats = bpf_map_lookup_elem(&stats, &stats_key);
+  data_stats = bpf_map_lookup_elem_by_value(&stats, stats_key);
   if (!data_stats) {
     return XDP_DROP;
   }
@@ -720,11 +720,11 @@ process_packet(struct xdp_md* xdp, __u64 off, bool is_ipv6) {
   }
 
   __u32 cpu_num = bpf_get_smp_processor_id();
-  void* lru_map = bpf_map_lookup_elem(&lru_mapping, &cpu_num);
+  void* lru_map = bpf_map_lookup_elem_by_value(&lru_mapping, cpu_num);
   if (!lru_map) {
     lru_map = &fallback_cache;
     __u32 lru_stats_key = MAX_VIPS + FALLBACK_LRU_CNTR;
-    struct lb_stats* lru_stats = bpf_map_lookup_elem(&stats, &lru_stats_key);
+    struct lb_stats* lru_stats = bpf_map_lookup_elem_by_value(&stats, lru_stats_key);
     if (!lru_stats) {
       return XDP_DROP;
     }
@@ -745,7 +745,7 @@ process_packet(struct xdp_md* xdp, __u64 off, bool is_ipv6) {
       // server generated connection id which can be used for routing.
       // fallback to CH to route quic icmp messages.
       __u32 stats_key = MAX_VIPS + QUIC_ICMP_STATS;
-      struct lb_stats* data_stats = bpf_map_lookup_elem(&stats, &stats_key);
+      struct lb_stats* data_stats = bpf_map_lookup_elem_by_value(&stats, stats_key);
       if (!data_stats) {
         return XDP_DROP;
       }
@@ -757,7 +757,7 @@ process_packet(struct xdp_md* xdp, __u64 off, bool is_ipv6) {
     } else {
       __u32 quic_packets_stats_key = 0;
       struct lb_quic_packets_stats* quic_packets_stats =
-          bpf_map_lookup_elem(&quic_packets_stats_map, &quic_packets_stats_key);
+          bpf_map_lookup_elem_by_value(&quic_packets_stats_map, quic_packets_stats_key);
       if (!quic_packets_stats) {
         return XDP_DROP;
       }
@@ -767,7 +767,7 @@ process_packet(struct xdp_md* xdp, __u64 off, bool is_ipv6) {
         // quic packet
         increment_quic_cid_version_stats(quic_packets_stats, qpr.cid_version);
         __u32 key = qpr.server_id;
-        __u32* real_pos = bpf_map_lookup_elem(&server_id_map, &key);
+        __u32* real_pos = bpf_map_lookup_elem_by_value(&server_id_map, key);
         if (real_pos) {
           // get a real position for the server id
           key = *real_pos;
@@ -779,7 +779,7 @@ process_packet(struct xdp_md* xdp, __u64 off, bool is_ipv6) {
             quic_packets_stats->ch_routed += 1;
           } else {
             pckt.real_index = key;
-            dst = bpf_map_lookup_elem(&reals, &key);
+            dst = bpf_map_lookup_elem_by_value(&reals, key);
             if (!dst) {
               // fail to find a real server with the real pos, drop the packet
               quic_packets_stats->cid_unknown_real_dropped += 1;
@@ -822,7 +822,7 @@ process_packet(struct xdp_md* xdp, __u64 off, bool is_ipv6) {
     if (pckt.flow.proto == IPPROTO_TCP && !(pckt.flags & F_SYN_SET)) {
       __u32 routing_stats_key = MAX_VIPS + TCP_SERVER_ID_ROUTE_STATS;
       struct lb_stats* routing_stats =
-          bpf_map_lookup_elem(&stats, &routing_stats_key);
+          bpf_map_lookup_elem_by_value(&stats, routing_stats_key);
       if (!routing_stats) {
         return XDP_DROP;
       }
@@ -860,7 +860,7 @@ process_packet(struct xdp_md* xdp, __u64 off, bool is_ipv6) {
       if (pckt.flow.proto == IPPROTO_TCP) {
         __u32 lru_stats_key = MAX_VIPS + LRU_MISS_CNTR;
         struct lb_stats* lru_stats =
-            bpf_map_lookup_elem(&stats, &lru_stats_key);
+            bpf_map_lookup_elem_by_value(&stats, lru_stats_key);
         if (!lru_stats) {
           return XDP_DROP;
         }
@@ -889,7 +889,7 @@ process_packet(struct xdp_md* xdp, __u64 off, bool is_ipv6) {
     }
   }
 
-  cval = bpf_map_lookup_elem(&ctl_array, &mac_addr_pos);
+  cval = bpf_map_lookup_elem_by_value(&ctl_array, mac_addr_pos);
 
   if (!cval) {
     return XDP_DROP;
