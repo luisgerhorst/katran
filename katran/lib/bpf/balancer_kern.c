@@ -38,8 +38,7 @@ __attribute__((__always_inline__)) static inline __u32 get_packet_hash(
 __attribute__((__always_inline__)) static inline bool is_under_flood(
     __u64* cur_time) {
   __u32 conn_rate_key = MAX_VIPS + NEW_CONN_RATE_CNTR;
-  struct lb_stats* conn_rate_stats =
-      bpf_map_lookup_elem(&stats, &conn_rate_key);
+  struct lb_stats* conn_rate_stats = bpf_map_lookup_elem_by_value(&stats, conn_rate_key);
   if (!conn_rate_stats) {
     return true;
   }
