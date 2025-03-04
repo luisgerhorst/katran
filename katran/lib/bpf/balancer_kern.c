@@ -896,7 +896,7 @@ process_packet(struct xdp_md* xdp, __u64 off, bool is_ipv6) {
   }
 
   vip_num = vip_info->vip_num;
-  data_stats = bpf_map_lookup_elem(&stats, &vip_num);
+  data_stats = bpf_map_lookup_elem_by_value(&stats, vip_num);
   if (!data_stats) {
     return XDP_DROP;
   }
@@ -904,7 +904,7 @@ process_packet(struct xdp_md* xdp, __u64 off, bool is_ipv6) {
   data_stats->v2 += pkt_bytes;
 
   // per real statistics
-  data_stats = bpf_map_lookup_elem(&reals_stats, &pckt.real_index);
+  data_stats = bpf_map_lookup_elem_by_value(&reals_stats, pckt.real_index);
   if (!data_stats) {
     return XDP_DROP;
   }
