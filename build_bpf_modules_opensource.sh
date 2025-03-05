@@ -70,16 +70,17 @@ if [ -z "${SRC_DIR-}" ] ; then
   SRC_DIR="$(pwd)"
 fi
 
-CLANG_PATH="${BUILD_DIR}/deps/clang/clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04"
-if [ -f /etc/redhat-release ]
+export LO_BPF_LLVM_VERSION=${LO_BPF_LLVM_VERSION:-default}
+if [[ $LO_BPF_LLVM_VERSION == default ]]
 then
-    CLANG_PATH=/usr
-fi
-export BPF_KFUNCS=${BPF_KFUNCS:-0}
-if [[ $BPF_KFUNCS == 1 ]]
-then
-    # required for __ksym support
-    llvm_version=19
+    CLANG_PATH="${BUILD_DIR}/deps/clang/clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04"
+    if [ -f /etc/redhat-release ]
+    then
+      CLANG_PATH=/usr
+    fi
+else
+    # >12 required for __ksym support
+    llvm_version=$LO_BPF_LLVM_VERSION
     CLANG_PATH="/usr/lib/llvm-$llvm_version"
     sudo apt-get install --yes lsb-release wget software-properties-common gnupg || true
     if [[ ! -d $CLANG_PATH ]] && [[ $(lsb_release --codename | cut -f2) == bookworm ]] ; then
@@ -87,7 +88,6 @@ then
       chmod +x llvm.sh
       sudo ./llvm.sh $llvm_version all
     fi
-    export LD_LIBRARY_PATH=$CLANG_PATH/lib:$LD_LIBRARY_PATH
 fi
 test -d $CLANG_PATH
 
