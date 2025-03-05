@@ -43,7 +43,7 @@ while getopts ":hb:s:d:m" arg; do
       SRC_DIR="${OPTARG}"
       ;;
     d)
-      DEFINES="$DEFINES ${OPTARG}"
+      DEFINES="${OPTARG}"
       ;;
     h) # Display help.
       usage
@@ -53,10 +53,8 @@ while getopts ":hb:s:d:m" arg; do
 done
 shift $((OPTIND -1))
 
-if [[ $DEFINES == "" ]]
-then
-    DEFINES=-O2
-fi
+LO_BPF_EXTRA_CFLAGS=${LO_BPF_EXTRA_CFLAGS:-"-O2"}
+DEFINES="$LO_BPF_EXTRA_CFLAGS $DEFINES"
 
 # Validate required parameters
 if [ -z "${BUILD_DIR-}" ] ; then
