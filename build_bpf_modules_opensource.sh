@@ -43,7 +43,7 @@ while getopts ":hb:s:d:m" arg; do
       SRC_DIR="${OPTARG}"
       ;;
     d)
-      DEFINES="${OPTARG}"
+      DEFINES="$DEFINES ${OPTARG}"
       ;;
     h) # Display help.
       usage
@@ -52,6 +52,11 @@ while getopts ":hb:s:d:m" arg; do
   esac
 done
 shift $((OPTIND -1))
+
+if [[ $DEFINES == "" ]]
+then
+    DEFINES=-O2
+fi
 
 # Validate required parameters
 if [ -z "${BUILD_DIR-}" ] ; then
