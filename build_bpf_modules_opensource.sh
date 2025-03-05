@@ -70,7 +70,7 @@ if [ -z "${SRC_DIR-}" ] ; then
   SRC_DIR="$(pwd)"
 fi
 
-export LO_BPF_LLVM_VERSION=${LO_BPF_LLVM_VERSION:-default}
+export LO_BPF_LLVM_VERSION=${LO_BPF_LLVM_VERSION:-18}
 if [[ $LO_BPF_LLVM_VERSION == default ]]
 then
     CLANG_PATH="${BUILD_DIR}/deps/clang/clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04"
