@@ -73,8 +73,8 @@ else
     # >12 required for __ksym support
     llvm_version=$LO_BPF_LLVM_VERSION
     CLANG_PATH="/usr/lib/llvm-$llvm_version"
-    sudo apt-get install --yes lsb-release wget software-properties-common gnupg || true
     if [[ ! -d $CLANG_PATH ]] && [[ $(lsb_release --codename | cut -f2) == bookworm ]] ; then
+      sudo apt-get install --yes lsb-release wget software-properties-common gnupg
       wget https://apt.llvm.org/llvm.sh
       chmod +x llvm.sh
       sudo ./llvm.sh $llvm_version all
