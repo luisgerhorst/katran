@@ -15,7 +15,8 @@
  # with this program; if not, write to the Free Software Foundation, Inc.,
  # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-set -xeo pipefail
+set -euo pipefail
+set -x
 # this script must be run inside katran's project root
 # if you are adding new bpf prog:
 # 1) put it into bpf/ dir
@@ -34,6 +35,9 @@ Usage ${0##*/} [-h|?] [-s SRC_DIR] [-b BUILD_DIR] [-d DEFINES]
 EOF
 }
 
+BUILD_DIR="$(pwd)/_build/"
+SRC_DIR="$(pwd)"
+DEFINES=""
 while getopts ":hb:s:d:m" arg; do
   case $arg in
     b)
@@ -53,20 +57,9 @@ while getopts ":hb:s:d:m" arg; do
 done
 shift $((OPTIND -1))
 
-LO_BPF_EXTRA_CFLAGS=${LO_BPF_EXTRA_CFLAGS:-"-O2"}
+LO_BPF_EXTRA_CFLAGS="${LO_BPF_EXTRA_CFLAGS:--O2}"
 DEFINES="$LO_BPF_EXTRA_CFLAGS $DEFINES"
-
-# Validate required parameters
-if [ -z "${BUILD_DIR-}" ] ; then
-  echo -e "[ INFO ] BUILD_DIR is not set. So setting it as default to $(pwd)"
-  BUILD_DIR="$(pwd)/_build/"
-fi
-
-# Validate required parameters
-if [ -z "${SRC_DIR-}" ] ; then
-  echo -e "[ INFO ] SRC_DIR is not set. So setting it as default to $(pwd) "
-  SRC_DIR="$(pwd)"
-fi
+EXTRA_LLCFLAGS="${LO_BPF_EXTRA_LLCFLAGS:-}"
 
 export LO_BPF_LLVM_VERSION=${LO_BPF_LLVM_VERSION:-18}
 if [[ $LO_BPF_LLVM_VERSION == default ]]
@@ -99,5 +92,6 @@ cp -r "${SRC_DIR}/katran/decap/bpf" "${BUILD_DIR}/deps/bpfprog/"
 cp "${SRC_DIR}"/katran/lib/linux_includes/* "${BUILD_DIR}/deps/bpfprog/include/"
 cd "${BUILD_DIR}/deps/bpfprog" && LD_LIBRARY_PATH="${CLANG_PATH}/lib" make \
   EXTRA_CFLAGS="${DEFINES}" \
+  EXTRA_LLCFLAGS="${EXTRA_LLCFLAGS}" \
   LLC="${CLANG_PATH}/bin/llc" CLANG="${CLANG_PATH}/bin/clang"
 echo "BPF BUILD COMPLETED"
